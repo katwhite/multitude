@@ -4,6 +4,7 @@
 #include <set>
 #include <iterator>
 #include <Windows.h>
+#include <string>
 
 using namespace std;
 
@@ -13,12 +14,17 @@ private:
 	//char* array;
 public:
 	set <char> data;
+	set <string> sylls;
 	multitude();
 	multitude(char a);
-	multitude(set <char> def); //constructor
+	multitude(string a);
+	multitude(set <char> def);
+	multitude(set <string> def);//constructor
 	void show();
+	void insert(string letter);
 	void insert(char letter);
 	void erase(char letter);
+	void erase(string letter);
 	multitude operator +(multitude a);
 	multitude operator -(multitude a);
 	multitude intersection(multitude a);
@@ -35,14 +41,29 @@ multitude::multitude(char a) {
 	data.insert(a);
 }
 
+multitude::multitude(string a) {
+	sylls.insert(a);
+}
+
 multitude::multitude(set <char> def) {
 	copy(def.begin(), def.end(), inserter(data, data.begin()));
 
 }
 
+multitude::multitude(set <string> def) {
+	copy(def.begin(), def.end(), inserter(sylls, sylls.begin()));
+
+}
+
 void multitude::show() {
 	copy(data.begin(), data.end(), ostream_iterator<char>(cout, ","));
+	//cout << "sylls";
+	copy(sylls.begin(), sylls.end(), ostream_iterator<string>(cout, ","));
 	cout << endl;
+}
+
+void multitude::insert(string letter) {
+	sylls.insert(letter);
 }
 
 void multitude::insert(char letter) {
@@ -53,8 +74,16 @@ void multitude::erase(char letter) {
 	if (data.find(letter) == data.end()) {
 		cout << "в множестве нет такой буквы" << "\n";
 	}
-	else
+	else 
 		data.erase(letter);
+}
+
+void multitude::erase(string letter) {
+	if (sylls.find(letter) == sylls.end()) {
+		cout << "в множестве нет такой буквы" << "\n";
+	}
+	else
+		sylls.erase(letter);
 }
 
 multitude multitude:: operator +(multitude a) {
@@ -101,6 +130,20 @@ bool multitude::isSame(multitude a) {
 	multiset <char> ::iterator it1 = data.begin();
 	for (int i = 1; it1 != data.end(); i++, it1++) {
 		if (a.data.find(*it1) == a.data.end()) {
+			return false;
+		}
+	}
+
+	multiset <string> ::iterator it3 = a.sylls.begin();
+	for (int i = 1; it3 != a.sylls.end(); i++, it3++) {
+		if (sylls.find(*it3) == sylls.end()) {
+			return false;
+		}
+	}
+
+	multiset <string> ::iterator it4 = sylls.begin();
+	for (int i = 1; it4 != sylls.end(); i++, it4++) {
+		if (a.sylls.find(*it4) == a.sylls.end()) {
 			return false;
 		}
 	}
